@@ -1,24 +1,15 @@
-name: Experimental images
+# Build a testing image from the testing branch (pre-release / WIP).
+name: Testing images
 
 on:
-  # Rebuild every quarter on Sunday at 8:20 UTC
-  schedule:
-    - cron: "20 8 * 1/3 0"
-
-  # Build on push to main
   push:
     branches:
-      - main
-    paths:
-      - .github/workflows/build-experimental.yaml
-      - "*.dockerfile"
-      - files/**
+      - testing
 
-  # Allow manually triggered rebuilds
   workflow_dispatch:
 
 concurrency:
-  group: build-experimental-images
+  group: build-testing-images
   cancel-in-progress: true
 
 permissions:
@@ -27,7 +18,6 @@ permissions:
   attestations: write
   id-token: write
 
-# Run the automated tests first, then publish the images if the tests pass
 jobs:
   test:
     name: ${{ matrix.dockerfile }}
@@ -46,8 +36,8 @@ jobs:
     uses: ./.github/workflows/build-job.yaml
     with:
       dockerfile: nginx.dockerfile
-      image-version: experimental
+      image-version: testing
       assert-version: false
       tags: |
-        ghcr.io/${{ github.repository_owner }}/baikal:experimental
+        ghcr.io/${{ github.repository_owner }}/baikal:testing
     secrets: inherit

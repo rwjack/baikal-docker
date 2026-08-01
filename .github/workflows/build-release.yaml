@@ -1,5 +1,5 @@
 # Build images when a Baikal version release is published.
-# Scheduled package rebuilds are handled by build-latest.yaml only.
+# Scheduled package rebuilds are handled by build-latest.yaml.
 name: Build release images
 
 on:
@@ -22,14 +22,17 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       baikal-version: ${{ steps.parse-release-tag.outputs.BAIKAL_VERSION }}
+      rebuild-date: ${{ steps.parse-release-tag.outputs.REBUILD_DATE }}
     steps:
       # Get the release version by stripping build metadata from the release name
       - name: Parse release tag
         id: parse-release-tag
         run: |
           BAIKAL_VERSION=${GITHUB_REF_NAME/+*/}
+          REBUILD_DATE=$(date -u +%Y%m%d)
           echo "BAIKAL_VERSION=$BAIKAL_VERSION" >> "$GITHUB_OUTPUT"
-          echo "Parsed Baikal version $BAIKAL_VERSION from release $GITHUB_REF_NAME"
+          echo "REBUILD_DATE=$REBUILD_DATE" >> "$GITHUB_OUTPUT"
+          echo "Parsed Baikal version $BAIKAL_VERSION from release $GITHUB_REF_NAME (build $REBUILD_DATE)"
 
   test:
     name: ${{ matrix.dockerfile }}
@@ -55,4 +58,5 @@ jobs:
       tags: |
         ghcr.io/${{ github.repository_owner }}/baikal:latest
         ghcr.io/${{ github.repository_owner }}/baikal:${{ needs.parse_release_tag.outputs.baikal-version }}
+        ghcr.io/${{ github.repository_owner }}/baikal:${{ needs.parse_release_tag.outputs.baikal-version }}-${{ needs.parse_release_tag.outputs.rebuild-date }}
     secrets: inherit

@@ -4,6 +4,7 @@ Ready-to-go [Baikal](https://sabre.io/baikal/) CalDAV/CardDAV server images (ngi
 
 [![Rebuild images](https://github.com/rwjack/baikal-docker/actions/workflows/build-latest.yaml/badge.svg)](https://github.com/rwjack/baikal-docker/actions/workflows/build-latest.yaml)
 [![Build release images](https://github.com/rwjack/baikal-docker/actions/workflows/build-release.yaml/badge.svg)](https://github.com/rwjack/baikal-docker/actions/workflows/build-release.yaml)
+[![Testing images](https://github.com/rwjack/baikal-docker/actions/workflows/build-testing.yaml/badge.svg)](https://github.com/rwjack/baikal-docker/actions/workflows/build-testing.yaml)
 ![Docker Architectures](https://img.shields.io/badge/arch-amd64%20%7C%20arm32v7%20%7C%20arm64v8-informational)
 
 ## Credits
@@ -22,9 +23,9 @@ Images are published to `ghcr.io/rwjack/baikal` (nginx only).
 | Tag | Meaning |
 | --- | --- |
 | `0.11.1` | Current Baikal release; rebuilt on the 1st and 15th with fresh OS/PHP packages |
-| `0.11.1-YYYYMMDD` | Pin to a specific rebuild |
+| `0.11.1-YYYYMMDD` | Pin to a specific release or scheduled rebuild (UTC date) |
 | `latest` | Alias of the current version tag after each release/rebuild |
-| `experimental` | Built from `main`; for testing only |
+| `testing` | Built from the `testing` branch; for pre-release validation |
 
 Version naming follows [Baikal](https://sabre.io/baikal/) itself. Multi-arch: `amd64`, `arm32v7`, `arm64v8`.
 
@@ -76,12 +77,12 @@ On start, `/docker-entrypoint.d/40-fix-baikal-file-permissions.sh` fixes ownersh
 
 ### `ghcr.io/rwjack/baikal:0.11.1`
 
-Recommended pin. Same Baikal version across rebuilds; OS and PHP packages stay current via the bi-monthly rebuild workflow.
+Recommended pin. Same Baikal version across rebuilds; OS and PHP packages stay current via the bi-monthly rebuild workflow. Each release and scheduled rebuild also publishes `0.11.1-YYYYMMDD`.
 
 ### `ghcr.io/rwjack/baikal:latest`
 
 Floating alias of the current release, updated on releases and scheduled rebuilds.
 
-### `ghcr.io/rwjack/baikal:experimental`
+### `ghcr.io/rwjack/baikal:testing`
 
-Latest code from this repository. Use at your own risk.
+Built from the `testing` branch on every push/merge. Use this to validate Dockerfile or packaging changes before cutting a version release on `main`.
