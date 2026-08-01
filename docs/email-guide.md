@@ -32,7 +32,7 @@ If you have an SMTP server without security in place, i.e. no authentication or 
 # docker-compose.yaml
 services:
   baikal:
-    image: ghcr.io/aalmenar/baikal:nginx
+    image: ghcr.io/rwjack/baikal:0.11.1
     environment:
       MSMTPRC: |
         defaults
@@ -47,7 +47,7 @@ If you have TLS and authentication in place, add the following configuration par
 # docker-compose.yaml
 services:
   baikal:
-    image: ghcr.io/aalmenar/baikal:nginx
+    image: ghcr.io/rwjack/baikal:0.11.1
     restart: always
     environment:
       MSMTPRC: |
@@ -85,7 +85,7 @@ Once that is done, use the following configuration:
 # docker-compose.yaml
 services:
   baikal:
-    image: ghcr.io/aalmenar/baikal:nginx
+    image: ghcr.io/rwjack/baikal:0.11.1
     environment:
       MSMTPRC: |
         defaults

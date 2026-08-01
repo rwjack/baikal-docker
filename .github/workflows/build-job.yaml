@@ -22,6 +22,16 @@ on:
         description: Git reference to build
         default: ${{ github.ref }}
         type: string
+      assert-version:
+        description: When true, require Dockerfile VERSION to match image-version
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+  attestations: write
+  id-token: write
 
 jobs:
   build:
@@ -31,6 +41,23 @@ jobs:
         with:
           ref: ${{ inputs.ref }}
           show-progress: false
+
+      - name: Assert Dockerfile VERSION matches image-version
+        if: inputs.assert-version
+        env:
+          EXPECTED_VERSION: ${{ inputs.image-version }}
+          DOCKERFILE: ${{ inputs.dockerfile }}
+        run: |
+          DOCKERFILE_VERSION=$(grep -E '^ENV VERSION=' "$DOCKERFILE" | cut -d= -f2 | tr -d '[:space:]')
+          if [ -z "$DOCKERFILE_VERSION" ]; then
+            echo "::error file=$DOCKERFILE::Could not find ENV VERSION= in Dockerfile"
+            exit 1
+          fi
+          if [ "$DOCKERFILE_VERSION" != "$EXPECTED_VERSION" ]; then
+            echo "::error file=$DOCKERFILE::Dockerfile VERSION ($DOCKERFILE_VERSION) does not match image-version ($EXPECTED_VERSION)"
+            exit 1
+          fi
+          echo "Dockerfile VERSION matches image-version: $EXPECTED_VERSION"
 
       # See https://github.com/docker/setup-qemu-action
       - name: Set up QEMU
@@ -55,6 +82,8 @@ jobs:
           file: ${{ inputs.dockerfile }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64/v8
           push: true
+          provenance: mode=max
+          sbom: true
           tags: ${{ inputs.tags }}
           labels: |
             org.opencontainers.image.created=${{ github.event.created_at }}

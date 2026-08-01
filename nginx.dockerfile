@@ -17,6 +17,7 @@ RUN curl -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
   apt remove -y lsb-release   &&\
   apt update                  &&\
   apt install -y            \
+  curl                      \
   php8.5-curl               \
   php8.5-fpm                \
   php8.5-mbstring           \
@@ -36,6 +37,9 @@ COPY files/docker-entrypoint.d/*.sh files/docker-entrypoint.d/*.php files/docker
 COPY --from=builder --chown=nginx:nginx baikal /var/www/baikal
 COPY files/favicon.ico /var/www/baikal/html
 COPY files/nginx.conf /etc/nginx/conf.d/default.conf
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD curl -fsS http://127.0.0.1/ >/dev/null || exit 1
 
 VOLUME /var/www/baikal/config
 VOLUME /var/www/baikal/Specific

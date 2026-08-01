@@ -10,7 +10,7 @@
 version: "2"
 services:
   baikal:
-    image: ghcr.io/aalmenar/baikal:nginx
+    image: ghcr.io/rwjack/baikal:0.11.1
     restart: always
     labels:
       traefik.enable: true

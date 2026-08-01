@@ -1,96 +1,87 @@
-# Baikal
+# Baikal Docker
 
-This repository is a fork of [ckulka/baikal-docker](https://github.com/ckulka/baikal-docker/) who has made an amazing job providing this image and work to build it.
+Ready-to-go [Baikal](https://sabre.io/baikal/) CalDAV/CardDAV server images (nginx + PHP).
 
-There are some variants from the original repository. Default images are the `*-nginx`.
+[![Rebuild images](https://github.com/rwjack/baikal-docker/actions/workflows/build-latest.yaml/badge.svg)](https://github.com/rwjack/baikal-docker/actions/workflows/build-latest.yaml)
+[![Build release images](https://github.com/rwjack/baikal-docker/actions/workflows/build-release.yaml/badge.svg)](https://github.com/rwjack/baikal-docker/actions/workflows/build-release.yaml)
+![Docker Architectures](https://img.shields.io/badge/arch-amd64%20%7C%20arm32v7%20%7C%20arm64v8-informational)
 
-[![Latest images](https://github.com/aalmenar/baikal-docker/actions/workflows/build-latest.yaml/badge.svg)](https://github.com/aalmenar/baikal-docker/actions/workflows/build-latest.yaml) [![Experimental images](https://github.com/aalmenar/baikal-docker/actions/workflows/build-experimental.yaml/badge.svg)](https://github.com/aalmenar/baikal-docker/actions/workflows/build-experimental.yaml) ![Docker Architectures](https://img.shields.io/badge/arch-amd64%20%7C%20arm32v7%20%7C%20arm64v8-informational)
+## Credits
 
-These dockerfiles provide a ready-to-go [Baikal server](http://sabre.io/baikal/).
+Based on the excellent work of:
 
-## Supported tags and respective Dockerfile links
+- **[ckulka/baikal-docker](https://github.com/ckulka/baikal-docker)** — original Docker image, compose examples, and docs
+- **[aalmenar/baikal-docker](https://github.com/aalmenar/baikal-docker)** — Baikal 0.11.x bump, PHP 8.5, nginx-default packaging, and related fixes
 
-Tags without a version are [weekly re-builds](https://github.com/aalmenar/baikal-docker/actions/workflows/build-latest.yaml) to include the latest base image with the most recent updates:
+This repository continues that lineage with clearer version tagging and scheduled package rebuilds.
 
-From now on latest images will be the nginx version.
+## Supported tags
 
-- `latest` and `nginx` are re-builds of the latest `*-nginx` version
+Images are published to `ghcr.io/rwjack/baikal` (nginx only).
 
-Experimental images now default to using the nginx images
+| Tag | Meaning |
+| --- | --- |
+| `0.11.1` | Current Baikal release; rebuilt on the 1st and 15th with fresh OS/PHP packages |
+| `0.11.1-YYYYMMDD` | Pin to a specific rebuild |
+| `latest` | Alias of the current version tag after each release/rebuild |
+| `experimental` | Built from `main`; for testing only |
 
-- `experimental-nginx` and `experimental` are re-builds of the latest `*-nginx` version
+Version naming follows [Baikal](https://sabre.io/baikal/) itself. Multi-arch: `amd64`, `arm32v7`, `arm64v8`.
 
-I follow the same version naming scheme as [Baikal](http://sabre.io/baikal/) themselves.
-
-The following tags support multiple architectures, e.g. `amd64`, `arm32v7`, `arm64v8` and `i386`.
-
-- [`0.11.1`, `0.11.1-nginx`](nginx.dockerfile)
+Dockerfile: [`nginx.dockerfile`](nginx.dockerfile) (currently Baikal `0.11.1`).
 
 ## Quick reference
 
-- **Where to file issues**:
-  [https://github.com/aalmenar/baikal-docker/issues](https://github.com/aalmenar/baikal-docker/issues)
-- **Supported architectures** ([more info](https://github.com/docker-library/official-images#architectures-other-than-amd64)):
-  `amd64`, `arm32v7`, `arm64v8`
-- **Image updates**:
-  [PRs for aalmenar/baikal-docker](https://github.com/aalmenar/baikal-docker/pulls)
-- **Source of this description**:
-  [https://github.com/aalmenar/baikal-docker](https://github.com/aalmenar/baikal-docker)
+- **Issues**: https://github.com/rwjack/baikal-docker/issues
+- **PRs**: https://github.com/rwjack/baikal-docker/pulls
+- **Source**: https://github.com/rwjack/baikal-docker
 
 ## What is Baikal?
 
-From [sabre.io/baikal](http://sabre.io/baikal/):
+From [sabre.io/baikal](https://sabre.io/baikal/):
 
 > Baikal is a Cal and CardDAV server, based on sabre/dav, that includes an administrative interface for easy management.
->
-> For more information, read the main website at baikal-server.com.
->
-> Baikal is developed by Net Gusto and fruux.
 
 ## How to use this image
 
-The following command will start Baikal:
-
 ```bash
-docker run --rm -it -p 80:80 ghcr.io/aalmenar/baikal:nginx
+docker run --rm -it -p 80:80 ghcr.io/rwjack/baikal:0.11.1
 ```
 
-Alternatively, use the provided [examples/docker-compose.yaml](https://github.com/aalmenar/baikal-docker/blob/master/examples/docker-compose.yaml) from the Git repository:
+Or use [examples/docker-compose.yaml](examples/docker-compose.yaml):
 
 ```bash
-docker compose up
+docker compose -f examples/docker-compose.yaml up
 ```
 
-You can now open [http://localhost](http://localhost) or [http://host-ip](http://host-ip) in your browser and use Baikal.
+Open http://localhost (or your host IP) in a browser.
 
-### Persistent Data
+### Persistent data
 
-The image exposes the `/var/www/baikal/Specific` and `/var/www/baikal/config` folders, which contain the persistent data. These folders should be part of a regular backup.
+The image exposes `/var/www/baikal/Specific` and `/var/www/baikal/config`. Back these up regularly.
 
-If you want to use local folders instead of Docker volumes, see [examples/docker-compose.localvolumes.yaml](https://github.com/aalmenar/baikal-docker/blob/master/examples/docker-compose.localvolumes.yaml) to avoid file permission issues.
+For bind mounts instead of named volumes, see [examples/docker-compose.localvolumes.yaml](examples/docker-compose.localvolumes.yaml).
 
-When the container starts, the startup script `/docker-entrypoint.d/40-fix-baikal-file-permissions.sh` ([Apache httpd](https://github.com/aalmenar/baikal-docker/blob/master/files/docker-entrypoint.d/httpd/40-fix-baikal-file-permissions.sh), [nginx](https://github.com/aalmenar/baikal-docker/blob/master/files/docker-entrypoint.d/nginx/40-fix-baikal-file-permissions.sh)) ensures that the file permissions are correct. You can disable this behaviour by setting the environment variable `BAIKAL_SKIP_CHOWN` to any value, e.g. `FALSE`.
+On start, `/docker-entrypoint.d/40-fix-baikal-file-permissions.sh` fixes ownership. Disable with `BAIKAL_SKIP_CHOWN=true`.
 
-### Further Guides
+### Guides
 
-You can find more installation and configuration guides here:
+- [Email Guide](docs/email-guide.md)
+- [Home Assistant Fix](docs/home-assistant-fix.md)
+- [SSL Certificate Guide](docs/ssl-certificates-guide.md)
+- [systemd Guide](docs/systemd-guide.md)
+- [Unraid Installation Guide](docs/unraid-installation-guide.md)
 
-- [Email Guide](https://github.com/aalmenar/baikal-docker/blob/master/docs/email-guide.md)
-- [Home Assistant Fix](https://github.com/aalmenar/baikal-docker/blob/master/docs/home-assistant-fix.md)
-- [SSL Certificate Guide](https://github.com/aalmenar/baikal-docker/blob/master/docs/ssl-certificates-guide.md)
-- [systemd Guide](https://github.com/aalmenar/baikal-docker/blob/master/docs/systemd-guide.md)
-- [Unraid Installation Guide](https://github.com/aalmenar/baikal-docker/blob/master/docs/unraid-installation-guide.md)
+## Image variants
 
-## Image Variants
+### `ghcr.io/rwjack/baikal:0.11.1`
 
-The `ghcr.io/aalmenar/baikal` images come in several flavors, each designed for a specific use case.
+Recommended pin. Same Baikal version across rebuilds; OS and PHP packages stay current via the bi-monthly rebuild workflow.
 
-### `ghcr.io/aalmenar/baikal:experimental`
+### `ghcr.io/rwjack/baikal:latest`
 
-This image has the latest code from the source repository, mainly used for testing before a version is released. Use this at your own risk.
+Floating alias of the current release, updated on releases and scheduled rebuilds.
 
-### `ghcr.io/aalmenar/baikal:latest`
+### `ghcr.io/rwjack/baikal:experimental`
 
-This image relies on [nginx](https://www.nginx.com/) and uses the [official nginx image](https://hub.docker.com/_/nginx/).
-
-Compared to the Apache variant, it is significantly smaller (less than half the size) and produces no warning messages out-of-the-box.
+Latest code from this repository. Use at your own risk.

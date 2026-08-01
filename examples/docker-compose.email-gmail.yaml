@@ -1,10 +1,10 @@
 # Docker Compose file for a Baikal server
-# See https://github.com/ckulka/baikal-docker/blob/master/docs/email-guide.md
+# See https://github.com/rwjack/baikal-docker/blob/main/docs/email-guide.md
 
 version: "2"
 services:
   baikal:
-    image: ghcr.io/aalmenar/baikal:nginx
+    image: ghcr.io/rwjack/baikal:0.11.1
     restart: always
     environment:
       MSMTPRC: |
