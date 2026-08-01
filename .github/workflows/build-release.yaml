@@ -29,7 +29,8 @@ jobs:
         id: parse-release-tag
         run: |
           BAIKAL_VERSION=${GITHUB_REF_NAME/+*/}
-          REBUILD_DATE=$(date -u +%Y%m%d)
+          # e.g. 2026.8.1 or 2026.8.15 (UTC, unpadded month/day)
+          REBUILD_DATE=$(date -u +%Y.%-m.%-d)
           echo "BAIKAL_VERSION=$BAIKAL_VERSION" >> "$GITHUB_OUTPUT"
           echo "REBUILD_DATE=$REBUILD_DATE" >> "$GITHUB_OUTPUT"
           echo "Parsed Baikal version $BAIKAL_VERSION from release $GITHUB_REF_NAME (build $REBUILD_DATE)"

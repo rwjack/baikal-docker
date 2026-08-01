@@ -34,7 +34,8 @@ jobs:
           fi
 
           BAIKAL_VERSION=${REF_NAME/+*/}
-          REBUILD_DATE=$(date -u +%Y%m%d)
+          # e.g. 2026.8.1 or 2026.8.15 (UTC, unpadded month/day)
+          REBUILD_DATE=$(date -u +%Y.%-m.%-d)
           echo "Parsed Baikal version $BAIKAL_VERSION from release $REF_NAME (rebuild $REBUILD_DATE)"
           echo "REF_NAME=$REF_NAME" >> "$GITHUB_OUTPUT"
           echo "BAIKAL_VERSION=$BAIKAL_VERSION" >> "$GITHUB_OUTPUT"

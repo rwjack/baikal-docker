@@ -23,7 +23,7 @@ Images are published to `ghcr.io/rwjack/baikal` (nginx only).
 | Tag | Meaning |
 | --- | --- |
 | `0.11.1` | Current Baikal release; rebuilt on the 1st and 15th with fresh OS/PHP packages |
-| `0.11.1-YYYYMMDD` | Pin to a specific release or scheduled rebuild (UTC date) |
+| `0.11.1-2026.8.1` | Pin to a specific release or scheduled rebuild (`YYYY.M.D` UTC) |
 | `latest` | Alias of the current version tag after each release/rebuild |
 | `testing` | Built from the `testing` branch; for pre-release validation |
 
@@ -77,7 +77,7 @@ On start, `/docker-entrypoint.d/40-fix-baikal-file-permissions.sh` fixes ownersh
 
 ### `ghcr.io/rwjack/baikal:0.11.1`
 
-Recommended pin. Same Baikal version across rebuilds; OS and PHP packages stay current via the bi-monthly rebuild workflow. Each release and scheduled rebuild also publishes `0.11.1-YYYYMMDD`.
+Recommended pin. Same Baikal version across rebuilds; OS and PHP packages stay current via the bi-monthly rebuild workflow. Each release and scheduled rebuild also publishes a dated tag like `0.11.1-2026.8.1`.
 
 ### `ghcr.io/rwjack/baikal:latest`
 
